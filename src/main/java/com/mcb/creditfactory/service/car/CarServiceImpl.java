@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service("CarDto")
 public class CarServiceImpl implements CarService{
 
     private ExternalApproveService approveService;

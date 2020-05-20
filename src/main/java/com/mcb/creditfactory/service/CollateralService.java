@@ -1,15 +1,12 @@
 package com.mcb.creditfactory.service;
 
-import com.mcb.creditfactory.dto.AirplaneDto;
-import com.mcb.creditfactory.dto.CarDto;
 import com.mcb.creditfactory.dto.Collateral;
 import com.mcb.creditfactory.model.Assessment;
-import com.mcb.creditfactory.service.airplane.AirplaneService;
-import com.mcb.creditfactory.service.car.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -17,22 +14,24 @@ import java.util.Optional;
 @Service
 public class CollateralService {
 
-//    @Autowired
     ApplicationContext context;
+
+    @Autowired
+    Map<String, ICollateralObjectService> serviceMap;
 
     ICollateralObjectService service;
 
-//    @Autowired
     AssessmentService assessmentService;
 
-    public CollateralService(@Autowired AssessmentService assessmentService, @Autowired ApplicationContext context) {
+    @Autowired
+    public CollateralService(AssessmentService assessmentService, ApplicationContext context) {
         this.assessmentService = assessmentService;
         this.context = context;
     }
 
     @SuppressWarnings("ConstantConditions")
     public Long saveCollateral(Collateral object) {
-        chooseService(object);
+        service = serviceMap.get(object.getClass().getSimpleName());
         boolean approved = service.approve(object);
         if (!approved) {
             return null;
@@ -50,7 +49,7 @@ public class CollateralService {
     }
 
     public Collateral getInfo(Collateral object) {
-        chooseService(object);
+        service = serviceMap.get(object.getClass().getSimpleName());
         return Optional.of(object)
                 .map(service::fromDto)
                 .map(service::getId)
@@ -63,17 +62,4 @@ public class CollateralService {
                 .map(service::toDTO)
                 .orElse(null);
     }
-
-    private void chooseService(Collateral object) {
-        if (object instanceof CarDto) {
-            service = context.getBean(CarService.class);
-        }
-        else if (object instanceof AirplaneDto) {
-            service = context.getBean(AirplaneService.class);
-        }
-        else {
-            throw new IllegalArgumentException();
-        }
-    }
-
 }

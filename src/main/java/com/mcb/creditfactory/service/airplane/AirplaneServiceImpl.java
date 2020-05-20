@@ -2,7 +2,6 @@ package com.mcb.creditfactory.service.airplane;
 
 import com.mcb.creditfactory.dto.AirplaneDto;
 import com.mcb.creditfactory.dto.Collateral;
-import com.mcb.creditfactory.dto.Collateral;
 import com.mcb.creditfactory.external.ExternalApproveService;
 import com.mcb.creditfactory.model.Airplane;
 import com.mcb.creditfactory.model.IModelObject;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service("AirplaneDto")
 public class AirplaneServiceImpl implements AirplaneService{
 
     private ExternalApproveService approveService;
